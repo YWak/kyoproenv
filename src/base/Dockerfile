@@ -50,6 +50,8 @@ RUN \
         language-pack-ja \
         less \
         make \
+        python3 \
+        python3-pip \
         tzdata \
         sudo \
         unzip \
@@ -64,27 +66,28 @@ RUN \
         libopenblas-dev \
         pkg-config \
         ; \
-    update-locale LANG=ja_JP.utf8
+    update-locale LANG=ja_JP.utf8; \
 
-# add user
-RUN \
-    set -e; \
+    # install online judge
+    mv /usr/bin/python3 /usr/bin/python; \
+    mv /usr/bin/pip3 /usr/bin/pip; \
+    python -m pip install online-judge-tools; \
+
+    # add user
     useradd -m user -s /bin/bash; \
     echo "user:user" | chpasswd; \
     echo "%user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/user; \
-    chmod 0440 /etc/sudoers.d/user
+    chmod 0440 /etc/sudoers.d/user; \
+    mkdir /home/user/work; \
+    chown user:user /home/user/work; \
 
-# install ACL
-RUN \
-    set -e; \
+    # install ACL
     mkdir /opt/ac-library; \
     curl -sSL -O https://github.com/atcoder/ac-library/releases/download/v1.4/ac-library.zip; \
     unzip ac-library.zip -d /opt/ac-library; \
-    rm ac-library.zip
+    rm ac-library.zip; \
 
-# install pypy3
-RUN \
-    set -e; \
+    # install pypy3
     case $(arch) in \
         x86_64) PYPY3_ARCH="linux64" ;; \
         aarch64) PYPY3_ARCH="aarch64" ;; \
@@ -114,17 +117,6 @@ RUN \
         typing-extensions==4.4.0 \
         cppyy==2.4.1 \
         git+https://github.com/not522/ac-library-python
-
-RUN \
-    set -e; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        ; \
-    mv /usr/bin/python3 /usr/bin/python; \
-    mv /usr/bin/pip3 /usr/bin/pip; \
-    python -m pip install online-judge-tools
 
 VOLUME ["/home/user/work"]
 CMD ["sleep", "infinity"]
