@@ -1,7 +1,7 @@
 IMAGE_NAME ?= ywak/kyoproenv
 
 dev: dev-base dev-cpp dev-py dev-cpppy dev-go
-test: test-base
+test: test-base test-cpp
 
 dev-base:
 	docker build -t $(IMAGE_NAME):base ./src/base
@@ -20,3 +20,6 @@ dev-go:
 
 test-base: dev-base
 	cd test/base && bash run.sh
+
+test-cpp: dev-cpp
+	cd test/cpp && bash run.sh

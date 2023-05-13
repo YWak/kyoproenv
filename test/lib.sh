@@ -20,8 +20,8 @@ _it () {
     else
         test_ng=$(( test_ng + 1 ))
         echo "$testname ... NG"
-        cat $out
     fi
+    cat $out
 }
 
 _show_results () {
