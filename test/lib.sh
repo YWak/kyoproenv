@@ -4,8 +4,15 @@ testsize=0
 test_ok=0
 test_ng=0
 
+trap ':' 0
+
+_trap_push () {
+    prev=$(trap -p 0 | sed -E -e "s/^trap -- '(.+)' EXIT/\1/")
+    trap "${prev}; $1" 0
+}
+
 _it () {
-    trap 'rm -f $out' 0
+    _trap_push "rm -f \$out"
     out=$(mktemp)
 
     testname="$1"
