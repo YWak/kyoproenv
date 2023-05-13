@@ -3,6 +3,7 @@ FROM ywak/kyoproenv:base
 ARG \
     GOLANG_VERSION="1.20.3"
 
+USER root
 RUN \
     set -e; \
     case $(uname -m) in \
@@ -16,5 +17,9 @@ RUN \
     tar xf ${GOLANG_ARCHIVE_NAME}; \
     rm -f ${GOLANG_ARCHIVE_NAME}; \
     mv ./go /opt; \
-    ln -s /opt/go/bin/go /usr/bin/go; \
-    go install github.com/ktateish/gottani/cmd/gottani@latest
+    ln -s /opt/go/bin/go /usr/bin/go
+
+USER user
+RUN \
+    go install github.com/ktateish/gottani/cmd/gottani@latest; \
+    echo 'export PATH=$PATH:$HOME/go/bin' >> ~/.profile

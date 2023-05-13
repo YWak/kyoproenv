@@ -1,6 +1,6 @@
 IMAGE_NAME ?= ywak/kyoproenv
 
-dev: dev-base dev-cpp dev-py dev-cpppy dev-go
+dev: dev-base dev-cpp dev-py dev-cpppy dev-golang
 test: test-base test-cpp
 
 dev-base:
@@ -15,7 +15,7 @@ dev-py:
 dev-cpppy:
 	docker build -t $(IMAGE_NAME):cpppy --build-arg SRC_IMAGE_NAME=$(IMAGE_NAME):cpp ./src/python
 
-dev-go:
+dev-golang:
 	docker build -t $(IMAGE_NAME):golang ./src/golang
 
 test-base: dev-base
@@ -23,3 +23,6 @@ test-base: dev-base
 
 test-cpp: dev-cpp
 	cd test/cpp && bash run.sh
+
+test-golang: dev-golang
+	cd test/golang && bash run.sh
